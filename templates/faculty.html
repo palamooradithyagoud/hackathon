@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Explorer — Faculty Research Intelligence Platform</title>
+  <link rel="stylesheet" href="../static/css/variables.css">
+  <link rel="stylesheet" href="../static/css/base.css">
+  <link rel="stylesheet" href="../static/css/layout.css">
+  <link rel="stylesheet" href="../static/css/sidebar.css">
+  <link rel="stylesheet" href="../static/css/navbar.css">
+  <link rel="stylesheet" href="../static/css/cards.css">
+  <link rel="stylesheet" href="../static/css/faculty.css">
+  <link rel="stylesheet" href="../static/css/animations.css">
+  <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">FRIP</span>
+          <span class="logo-tagline">Vardhaman Univ</span>
+        </div>
+      </a>
+      <div class="sidebar-nav">
+        <span class="nav-section-label">General</span>
+        <a href="dashboard.html" class="nav-item" data-label="Dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="chat.html" class="nav-item" data-label="AI Chat">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span class="nav-label">AI Chat</span>
+        </a>
+        <a href="faculty.html" class="nav-item active" data-label="Faculty Explorer">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span class="nav-label">Faculty Explorer</span>
+        </a>
+        <span class="nav-section-label">Analysis</span>
+        <a href="research_gap.html" class="nav-item" data-label="Gap Analysis">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <span class="nav-label">Research Gap</span>
+        </a>
+        <a href="collaboration.html" class="nav-item" data-label="Collaboration">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          <span class="nav-label">Collaboration</span>
+        </a>
+        <a href="citation_graph.html" class="nav-item" data-label="Citation Graph">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </span>
+          <span class="nav-label">Citation Graph</span>
+        </a>
+        <a href="analytics.html" class="nav-item" data-label="Analytics">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          <span class="nav-label">Analytics</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost btn-icon theme-toggle" data-action="theme-toggle" aria-label="Toggle theme"></button>
+      </div>
+      <button class="sidebar-toggle" aria-label="Toggle sidebar collapse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+    </aside>
+
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Area -->
+    <main class="main-area">
+      <!-- Top Navigation -->
+      <nav class="navbar" role="navigation" aria-label="Top navigation">
+        <button class="hamburger" aria-label="Open navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <div class="breadcrumb-item"><a href="index.html">FRIP</a></div>
+          <div class="breadcrumb-sep">/</div>
+          <div class="breadcrumb-item">Faculty Explorer</div>
+        </div>
+        <div class="navbar-actions">
+          <div class="model-badge">Llama-4-Scout</div>
+          <div class="user-avatar" title="User Profile">AD</div>
+        </div>
+      </nav>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="content-wrapper">
+          <!-- Controls Panel -->
+          <div class="faculty-controls">
+            <div class="faculty-search-wrap">
+              <input type="text" id="faculty-search-input" placeholder="Search by name, research interest, department..." aria-label="Search faculty members">
+              <span class="faculty-search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </span>
+            </div>
+            
+            <div class="view-sort">
+              <button class="view-btn active" id="view-grid-btn" title="Grid View" aria-label="Grid View">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+              </button>
+              <button class="view-btn" id="view-list-btn" title="List View" aria-label="List View">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Faculty Filter Chips -->
+          <div class="filter-chips" style="margin-bottom: var(--space-5);">
+            <button class="filter-chip active" data-dept="all">All Departments</button>
+            <button class="filter-chip" data-dept="cse">Computer Science</button>
+            <button class="filter-chip" data-dept="it">Information Tech</button>
+            <button class="filter-chip" data-dept="ece">Electronics & Comm</button>
+          </div>
+
+          <!-- Faculty Display Grid -->
+          <div class="faculty-grid" id="faculty-display-grid">
+            <!-- Skeleton cards -->
+            <div class="skeleton" style="height: 180px; border-radius: var(--radius-lg);"></div>
+            <div class="skeleton" style="height: 180px; border-radius: var(--radius-lg);"></div>
+            <div class="skeleton" style="height: 180px; border-radius: var(--radius-lg);"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Faculty Detail Modal -->
+  <div class="modal-backdrop" id="faculty-detail-modal">
+    <div class="modal-box faculty-modal">
+      <button class="node-detail-close" onclick="closeModal('faculty-detail-modal')">×</button>
+      <div class="faculty-modal-header">
+        <div class="faculty-modal-avatar" id="modal-avatar">PD</div>
+        <div class="faculty-modal-info">
+          <h3 class="faculty-modal-name" id="modal-name">Dr. Padmaja</h3>
+          <div class="faculty-modal-domain" id="modal-domain">Plant Pathology / CV</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <h4 style="font-size: var(--text-sm); font-weight: var(--weight-semibold); margin-bottom: var(--space-2);">Research Overview</h4>
+        <p style="font-size: var(--text-xs); color: var(--text-muted); line-height: 1.5;" id="modal-bio">
+          Analyzing plant leaf disease visual indicators using convolutional neural networks and forecasting agricultural crop security profiles.
+        </p>
+      </div>
+      <div class="faculty-modal-papers">
+        <h4 style="font-size: var(--text-sm); font-weight: var(--weight-semibold); margin-bottom: var(--space-2);">Indexed Publication</h4>
+        <div class="faculty-modal-paper-item" id="modal-paper-title">
+          Agri-Ai-Intelligent-Plant-Disease-Surveillance-and-Predictive-Forecasting_PADMAJA.pdf
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../static/js/app.js"></script>
+  <script type="module" src="../static/js/faculty.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 class ChatRequest(BaseModel):
     query: str
+    role: Optional[str] = "student"
 
 class ChatResponse(BaseModel):
     intent: str
@@ -44,6 +45,7 @@ class LogItem(BaseModel):
     query: str
     response: str
     mode: str
+    role: Optional[str] = None
     timestamp: str
 
 class ProfessorConfirmRequest(BaseModel):

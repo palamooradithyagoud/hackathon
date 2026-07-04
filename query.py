@@ -38,7 +38,7 @@ def query_documents(collection, question: str, n_results: int = 8):
 def ask_groq(question: str, context: str) -> str:
     """Send the question + retrieved context to Groq LLM and return the answer."""
     groq_key = os.getenv("GROQ_API_KEY", "").strip()
-    model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+    model = os.getenv("GROQ_MODEL", "meta-llama/llama-4-scout-17b-16e-instruct").strip()
 
     if not groq_key:
         print("ERROR: Missing GROQ_API_KEY in .env")

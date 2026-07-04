@@ -12,14 +12,15 @@ class MemoryStore:
     def __init__(self):
         pass
 
-    def log_query(self, query_text: str, response_text: str, mode: str = "chat") -> int:
+    def log_query(self, query_text: str, response_text: str, mode: str = "chat", role: str = "student") -> int:
         """Logs a conversation query and returns the record ID."""
         db: Session = SessionLocal()
         try:
             query_log = QueryLog(
                 query_text=query_text,
                 response_text=response_text,
-                mode=mode
+                mode=mode,
+                role=role
             )
             db.add(query_log)
             db.commit()
@@ -30,7 +31,8 @@ class MemoryStore:
                 "action": "query_logged",
                 "id": query_log.id,
                 "query": query_text,
-                "mode": mode
+                "mode": mode,
+                "role": role
             })
             
             return query_log.id
@@ -173,11 +175,14 @@ class MemoryStore:
         finally:
             db.close()
 
-    def get_recent_logs(self, limit: int = 20) -> list[dict]:
-        """Fetches recent query logs and responses."""
+    def get_recent_logs(self, limit: int = 20, role: str = None) -> list[dict]:
+        """Fetches recent query logs and responses, optionally filtered by role."""
         db: Session = SessionLocal()
         try:
-            logs = db.query(QueryLog).order_by(QueryLog.timestamp.desc()).limit(limit).all()
+            query = db.query(QueryLog)
+            if role:
+                query = query.filter(QueryLog.role == role)
+            logs = query.order_by(QueryLog.timestamp.desc()).limit(limit).all()
             result = []
             for log in logs:
                 result.append({
@@ -185,6 +190,7 @@ class MemoryStore:
                     "query": log.query_text,
                     "response": log.response_text,
                     "mode": log.mode,
+                    "role": log.role,
                     "timestamp": log.timestamp.isoformat()
                 })
             return result

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citation Graph — Faculty Research Intelligence Platform</title>
+  <link rel="stylesheet" href="../static/css/variables.css">
+  <link rel="stylesheet" href="../static/css/base.css">
+  <link rel="stylesheet" href="../static/css/layout.css">
+  <link rel="stylesheet" href="../static/css/sidebar.css">
+  <link rel="stylesheet" href="../static/css/navbar.css">
+  <link rel="stylesheet" href="../static/css/cards.css">
+  <link rel="stylesheet" href="../static/css/graph.css">
+  <link rel="stylesheet" href="../static/css/animations.css">
+  <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">FRIP</span>
+          <span class="logo-tagline">Vardhaman Univ</span>
+        </div>
+      </a>
+      <div class="sidebar-nav">
+        <span class="nav-section-label">General</span>
+        <a href="dashboard.html" class="nav-item" data-label="Dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="chat.html" class="nav-item" data-label="AI Chat">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span class="nav-label">AI Chat</span>
+        </a>
+        <a href="faculty.html" class="nav-item" data-label="Faculty Explorer">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span class="nav-label">Faculty Explorer</span>
+        </a>
+        <span class="nav-section-label">Analysis</span>
+        <a href="research_gap.html" class="nav-item" data-label="Gap Analysis">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <span class="nav-label">Research Gap</span>
+        </a>
+        <a href="collaboration.html" class="nav-item" data-label="Collaboration">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          <span class="nav-label">Collaboration</span>
+        </a>
+        <a href="citation_graph.html" class="nav-item active" data-label="Citation Graph">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </span>
+          <span class="nav-label">Citation Graph</span>
+        </a>
+        <a href="analytics.html" class="nav-item" data-label="Analytics">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          <span class="nav-label">Analytics</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost btn-icon theme-toggle" data-action="theme-toggle" aria-label="Toggle theme"></button>
+      </div>
+      <button class="sidebar-toggle" aria-label="Toggle sidebar collapse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+    </aside>
+
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Area -->
+    <main class="main-area">
+      <!-- Top Navigation -->
+      <nav class="navbar" role="navigation" aria-label="Top navigation">
+        <button class="hamburger" aria-label="Open navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <div class="breadcrumb-item"><a href="index.html">FRIP</a></div>
+          <div class="breadcrumb-sep">/</div>
+          <div class="breadcrumb-item">Citation Graph</div>
+        </div>
+        <div class="navbar-actions">
+          <div class="model-badge">Llama-4-Scout</div>
+          <div class="user-avatar" title="User Profile">AD</div>
+        </div>
+      </nav>
+
+      <!-- Page Content -->
+      <div class="page-content" style="padding: 0;">
+        <div class="graph-page">
+          <!-- Toolbar -->
+          <div class="graph-toolbar">
+            <div class="graph-toolbar-group">
+              <div class="graph-search" style="display: flex; gap: var(--space-2); align-items: center; position: relative;">
+                <input type="text" id="graph-search-input" placeholder="Highlight node..." aria-label="Search citation node">
+                <div class="graph-toolbar-sep" style="height: 20px; margin: 0 var(--space-1);"></div>
+                <input type="text" id="scholar-search-input" placeholder="Search dynamic paper graph..." style="width: 250px; height: 34px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0 var(--space-3); font-size: var(--text-xs); color: var(--text-primary);" aria-label="Search Scholar paper">
+                <button class="btn btn-primary btn-sm" id="scholar-search-btn" style="height: 34px; padding: 0 var(--space-3); font-size: var(--text-xs);">Search & Build</button>
+                
+                <!-- Autocomplete Dropdown -->
+                <div id="scholar-search-results" style="display:none; position:absolute; top: 40px; left: 240px; width: 360px; background:var(--bg-surface-2); border:1px solid var(--border-color); border-radius:var(--radius-md); box-shadow:var(--shadow-lg); z-index:1000; max-height:220px; overflow-y:auto; padding: var(--space-2);"></div>
+              </div>
+            </div>
+            
+            <div class="graph-toolbar-sep"></div>
+
+            <div class="graph-toolbar-group">
+              <button class="btn btn-ghost btn-sm" id="graph-reset-pan-btn" title="Recenter Graph">Recenter</button>
+              <button class="btn btn-ghost btn-sm" id="graph-fullscreen-btn" title="Toggle Fullscreen">Fullscreen</button>
+            </div>
+          </div>
+
+          <!-- Canvas Workspace -->
+          <div class="graph-canvas-wrap" id="graph-workspace">
+            <canvas id="graph-canvas"></canvas>
+
+            <!-- Float Info Panel -->
+            <div class="node-detail-panel" id="graph-node-details">
+              <button class="node-detail-close" id="graph-details-close-btn">×</button>
+              <h4 style="font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-primary);" id="detail-title">Dr. Padmaja</h4>
+              <p style="font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-2);" id="detail-type">Node Type: Faculty</p>
+              <div class="divider"></div>
+              <p style="font-size: 11px; line-height: 1.4; color: var(--text-secondary);" id="detail-desc">
+                Research paper grounding, citation connections and domain matches.
+              </p>
+            </div>
+
+            <!-- Legend -->
+            <div class="graph-legend">
+              <h5 class="graph-legend-title">Legend</h5>
+              <div class="graph-legend-item">
+                <span class="graph-legend-dot" style="background: #4F46E5;"></span>
+                <span>Faculty Profile Node</span>
+              </div>
+              <div class="graph-legend-item">
+                <span class="graph-legend-dot" style="background: #06B6D4;"></span>
+                <span>Research Domain / Topic</span>
+              </div>
+              <div class="graph-legend-item">
+                <span class="graph-legend-dot" style="background: #10B981;"></span>
+                <span>Seed Publication Node</span>
+              </div>
+            </div>
+
+            <!-- Zoom -->
+            <div class="graph-zoom-controls">
+              <button class="zoom-btn" id="graph-zoom-in" aria-label="Zoom In">+</button>
+              <button class="zoom-btn" id="graph-zoom-out" aria-label="Zoom Out">-</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="../static/js/app.js"></script>
+  <script type="module" src="../static/js/citation.js"></script>
+</body>
+</html>

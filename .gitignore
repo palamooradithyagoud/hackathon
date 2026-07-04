@@ -40,3 +40,5 @@ logs/
 .system_generated/
 downloaded_pdfs/
 /chromadb_data/
+downloads_temp/
+

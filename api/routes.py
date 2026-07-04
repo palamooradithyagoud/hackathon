@@ -6,7 +6,7 @@ Declares endpoints for chat, upload, collaboration, gap analysis, logs, and feed
 import os
 import shutil
 import tempfile
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from api.schemas import (
     ChatRequest, ChatResponse, 
@@ -28,12 +28,13 @@ ingest_pipeline = IngestPipeline()
 async def chat_endpoint(request: ChatRequest):
     """Conversational endpoint routing to RAG, collaboration or gap analysis."""
     try:
-        res = chat_agent.run_query(request.query)
+        res = chat_agent.run_query(request.query, role=request.role)
         # Log to memory database automatically
         query_log_id = memory.log_query(
             query_text=request.query,
             response_text=res["response_text"],
-            mode=res["intent"]
+            mode=res["intent"],
+            role=request.role
         )
         res["data"]["query_log_id"] = query_log_id
         return ChatResponse(
@@ -187,6 +188,17 @@ async def professor_confirm_endpoint(request: ProfessorConfirmRequest):
         # 3. Generate email
         email_draft = prof_agent.generate_collaboration_email(selected_proj)
 
+        # 4. Trigger Email Service to send/mock-send
+        from services.email_service import EmailService
+        recipients = [f"{fac.replace(' ', '.').lower()}@university.edu" for fac in selected_proj.get("faculty", [])]
+        if not recipients:
+            recipients = ["coordinator@university.edu"]
+        EmailService.send_pitch(
+            subject=email_draft["subject"],
+            body=email_draft["body"],
+            recipients=recipients
+        )
+
         return {
             "status": "success",
             "query_log_id": q_log_id,
@@ -208,7 +220,75 @@ async def feedback_endpoint(request: FeedbackRequest):
     return FeedbackResponse(success=True, message="Feedback logged successfully.")
 
 @router.get("/logs", response_model=List[LogItem])
-async def logs_endpoint():
-    """Fetch audit history logs."""
-    logs = memory.get_recent_logs()
+async def logs_endpoint(role: Optional[str] = None):
+    """Fetch audit history logs, optionally filtered by role."""
+    logs = memory.get_recent_logs(role=role)
     return [LogItem(**log) for log in logs]
+
+@router.get("/stats")
+async def stats_endpoint():
+    """Dashboard statistics: faculty, papers, queries, domains."""
+    try:
+        import chromadb, os
+        from core.config import settings
+
+        # ChromaDB stats
+        client = chromadb.CloudClient(
+            api_key=settings.CHROMA_API_KEY,
+            tenant=settings.CHROMA_TENANT,
+            database=settings.CHROMA_DATABASE,
+        )
+        col = client.get_or_create_collection(settings.CHROMA_COLLECTION_NAME)
+        chunk_count = col.count()
+
+        # Get distinct sources from ChromaDB
+        sample = col.get(limit=300, include=["metadatas"])
+        sources = {}
+        for m in sample["metadatas"]:
+            src = m.get("source", "unknown")
+            sources[src] = sources.get(src, 0) + 1
+
+        paper_count = len(sources)
+
+        # Map paper names to faculty
+        faculty_map = {
+            "PADMAJA": "Plant Disease / Agriculture AI",
+            "VENKATESHWARA": "Feature Engineering / ML",
+            "venkateshwara": "Feature Engineering / ML",
+            "MADHURYA": "IoT / Networking",
+            "GAGANDEEP": "IoT / Healthcare",
+            "gagandeep": "IoT / Healthcare",
+            "VASANTHA": "Network Infrastructure",
+            "vasantha": "Network Infrastructure",
+            "SRININVAS_GONGULA": "Big Data / Safety",
+            "RAVIKUMAR": "Networking / IPv6",
+            "MANZOOR": "Deep Learning / GenAI",
+        }
+        domains = [
+            "Agriculture AI", "Machine Learning", "IoT", "Healthcare",
+            "Big Data", "Networking", "Deep Learning", "Generative AI",
+            "Economics", "Heart Disease Research", "Computer Vision"
+        ]
+
+        # Query log stats
+        logs = memory.get_recent_logs(limit=100)
+        total_queries = len(logs)
+        intent_counts = {}
+        for log in logs:
+            mode = log.get("mode", "rag")
+            intent_counts[mode] = intent_counts.get(mode, 0) + 1
+
+        return {
+            "chunk_count": chunk_count,
+            "paper_count": paper_count,
+            "faculty_count": 8,
+            "domain_count": len(domains),
+            "total_queries": total_queries,
+            "domains": domains,
+            "papers": list(sources.keys()),
+            "intent_breakdown": intent_counts,
+            "model": settings.GROQ_MODEL.split("/")[-1],
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

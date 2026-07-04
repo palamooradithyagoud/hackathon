@@ -1,0 +1,222 @@
+/* ============================================================
+   graph.css — Citation Network Graph Page
+   ============================================================ */
+
+.graph-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+}
+
+.graph-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.graph-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.graph-toolbar-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+}
+
+/* ── Canvas Container ── */
+.graph-canvas-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-base);
+  background-image:
+    radial-gradient(circle, rgba(79,70,229,0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+#graph-canvas {
+  display: block;
+  cursor: grab;
+  width: 100%;
+  height: 100%;
+}
+
+#graph-canvas:active { cursor: grabbing; }
+
+/* ── Node Tooltip ── */
+.graph-tooltip {
+  position: absolute;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+  max-width: 220px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transition: opacity var(--ease-fast);
+}
+
+.graph-tooltip.visible { opacity: 1; }
+
+.graph-tooltip-title {
+  font-weight: var(--weight-semibold);
+  margin-bottom: 3px;
+  color: var(--text-primary);
+}
+
+.graph-tooltip-subtitle {
+  color: var(--text-muted);
+}
+
+/* ── Graph Legend ── */
+.graph-legend {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.graph-legend-title {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.graph-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.graph-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Zoom Controls ── */
+.graph-zoom-controls {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.zoom-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 18px;
+  font-weight: var(--weight-bold);
+  transition: all var(--ease-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.zoom-btn:hover {
+  background: var(--bg-surface-2);
+  color: var(--text-primary);
+}
+
+/* ── Node Details Panel ── */
+.node-detail-panel {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 280px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(10px);
+  transition: all var(--ease-default);
+}
+
+.node-detail-panel.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+
+.node-detail-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-2);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+/* ── Search on Graph ── */
+.graph-search {
+  position: relative;
+}
+
+.graph-search input {
+  height: 34px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3) 0 32px;
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  width: 200px;
+  transition: all var(--ease-fast);
+}
+
+.graph-search input:focus {
+  border-color: var(--color-primary);
+  width: 260px;
+}
+
+.graph-search-icon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.graph-search-icon svg { width: 14px; height: 14px; }

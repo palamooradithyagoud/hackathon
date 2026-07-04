@@ -1,0 +1,160 @@
+/**
+ * api.js — Centralized API Client
+ * All backend calls live here. No page should call fetch() directly.
+ * @module api
+ */
+
+const BASE_URL = 'http://localhost:8000/api';
+
+/**
+ * Core fetch wrapper with loading states and error handling.
+ * @param {string} endpoint - API path (e.g. '/chat')
+ * @param {Object} options - fetch options
+ * @returns {Promise<any>}
+ */
+async function apiFetch(endpoint, options = {}) {
+  const url = `${BASE_URL}${endpoint}`;
+  const config = {
+    headers: { 'Content-Type': 'application/json', ...options.headers },
+    ...options,
+  };
+
+  const response = await fetch(url, config);
+
+  if (!response.ok) {
+    let errMsg = `HTTP ${response.status}`;
+    try {
+      const errBody = await response.json();
+      errMsg = errBody.detail || errBody.message || errMsg;
+    } catch (_) {}
+    throw new Error(errMsg);
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  }
+  return response.text();
+}
+
+// ── Exported API Methods ──────────────────────────────────────
+
+/**
+ * Send a chat query to the RAG pipeline.
+ * @param {string} query
+ * @returns {Promise<{intent: string, response_text: string, data: object}>}
+ */
+export async function chat(query, role = 'student') {
+  return apiFetch('/chat', {
+    method: 'POST',
+    body: JSON.stringify({ query, role }),
+  });
+}
+
+/**
+ * Get faculty collaboration analysis.
+ * @param {string} facultyA
+ * @param {string} facultyB
+ */
+export async function collaborate(facultyA, facultyB) {
+  return apiFetch('/collaborate', {
+    method: 'POST',
+    body: JSON.stringify({ faculty_a: facultyA, faculty_b: facultyB }),
+  });
+}
+
+/**
+ * Professor Intelligence Mode: full analysis report.
+ * @param {string} topic
+ */
+export async function professorAnalyze(topic) {
+  return apiFetch('/professor/analyze', {
+    method: 'POST',
+    body: JSON.stringify({ topic }),
+  });
+}
+
+/**
+ * Confirm a project suggestion and generate email draft.
+ * @param {string} topic
+ * @param {object} report
+ * @param {number} projectIdx
+ */
+export async function professorConfirm(topic, report, projectIdx) {
+  return apiFetch('/professor/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ topic, report, project_idx: projectIdx }),
+  });
+}
+
+/**
+ * Recommend faculty for a research area.
+ * @param {string} query
+ */
+export async function recommend(query) {
+  return apiFetch('/recommend', {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+  });
+}
+
+/**
+ * Upload a faculty PDF to the knowledge base.
+ * @param {File} file
+ */
+export async function uploadPdf(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return apiFetch('/upload_pdf', {
+    method: 'POST',
+    headers: {},  // Let browser set multipart boundary
+    body: formData,
+  });
+}
+
+/**
+ * Submit feedback rating for a query.
+ * @param {number} queryLogId
+ * @param {number} rating - 1-5
+ * @param {string} [comments]
+ */
+export async function submitFeedback(queryLogId, rating, comments = '') {
+  return apiFetch('/feedback', {
+    method: 'POST',
+    body: JSON.stringify({ query_log_id: queryLogId, rating, comments }),
+  });
+}
+
+/**
+ * Get recent query audit logs.
+ * @returns {Promise<Array>}
+ */
+export async function getLogs() {
+  return apiFetch('/logs');
+}
+
+/**
+ * Get system stats for the dashboard.
+ * @returns {Promise<object>}
+ */
+export async function getStats() {
+  return apiFetch('/stats');
+}
+
+/**
+ * Search Semantic Scholar database for papers.
+ * @param {string} query
+ * @returns {Promise<Array>}
+ */
+export async function searchSemanticScholar(query) {
+  return apiFetch(`/semantic/search?query=${encodeURIComponent(query)}`);
+}
+
+/**
+ * Fetch dynamic citation graph for a paper ID.
+ * @param {string} paperId
+ * @returns {Promise<object>}
+ */
+export async function fetchCitationGraph(paperId) {
+  return apiFetch(`/semantic/graph/${paperId}`);
+}

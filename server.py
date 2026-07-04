@@ -25,6 +25,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
 # Configure CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
@@ -34,11 +38,68 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register routes
+# Register API routes
 app.include_router(router, prefix="/api")
+
+from routers.semantic_router import router as semantic_router
+app.include_router(semantic_router, prefix="/api/semantic", tags=["Semantic Scholar"])
+
+
+# Serve static assets
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Serve HTML templates directly
+TEMPLATES_DIR = "templates"
+
+@app.get("/")
+@app.get("/index.html")
+async def read_index():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "index.html"))
+
+@app.get("/dashboard.html")
+async def read_dashboard():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "dashboard.html"))
+
+@app.get("/chat.html")
+async def read_chat():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "chat.html"))
+
+@app.get("/faculty.html")
+async def read_faculty():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "faculty.html"))
+
+@app.get("/research_gap.html")
+async def read_research_gap():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "research_gap.html"))
+
+@app.get("/collaboration.html")
+async def read_collaboration():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "collaboration.html"))
+
+@app.get("/citation_graph.html")
+async def read_citation_graph():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "citation_graph.html"))
+
+@app.get("/analytics.html")
+async def read_analytics():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "analytics.html"))
+
+@app.get("/profile.html")
+async def read_profile():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "profile.html"))
+
+@app.get("/{catchall:path}")
+async def read_catchall(catchall: str):
+    # Fallback to 404
+    path_404 = os.path.join(TEMPLATES_DIR, "404.html")
+    if os.path.exists(path_404):
+        return FileResponse(path_404)
+    return {"error": "Page not found"}
 
 # Export app for Vercel handler
 handler = app
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+

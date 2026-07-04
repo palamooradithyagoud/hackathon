@@ -26,7 +26,15 @@ def main():
     chat_agent = ChatAgent()
     memory = MemoryStore()
     
+    print("Choose your default user role:")
+    print("  1. Student (simple, educational tone)")
+    print("  2. Faculty (academic depth, peer-to-peer synergy tone)")
+    role_choice = input("Select option (1 or 2, default: 1): ").strip()
+    user_role = "faculty" if role_choice == "2" else "student"
+    print(f"-> Active Mode: {user_role.upper()}")
+    
     print("\nAsk questions like: 'Who works on Federated Learning?' or 'Professor mode: IoT'")
+    print("You can switch roles using: '/role student' or '/role faculty'")
     print("Type 'exit' or 'quit' to terminate the session.\n")
     
     while True:
@@ -119,6 +127,18 @@ def main():
                             print(f"Subject: {email_draft['subject']}")
                             print(f"Body:\n{email_draft['body']}")
                             print("=" * 65)
+
+                            # 2b. Send email
+                            from services.email_service import EmailService
+                            recipients = [f"{fac.replace(' ', '.').lower()}@university.edu" for fac in selected_proj.get("faculty", [])]
+                            if not recipients:
+                                recipients = ["coordinator@university.edu"]
+                            print(f"\nSending collaboration email to {', '.join(recipients)}...")
+                            EmailService.send_pitch(
+                                subject=email_draft["subject"],
+                                body=email_draft["body"],
+                                recipients=recipients
+                            )
                             
                             # 3. Interactive feedback loop
                             rating_in = input("\nWould you like to rate this response? (1-5, or press Enter to skip): ").strip()
@@ -143,12 +163,31 @@ def main():
 
         # Run query through intent router
         try:
-            result = chat_agent.run_query(query)
+            # Check for role switches on the fly
+            if query.lower().startswith("/role "):
+                new_role = query[6:].strip().lower()
+                if new_role in ("student", "faculty"):
+                    user_role = new_role
+                    print(f"-> Active Mode changed to: {user_role.upper()}\n")
+                else:
+                    print("Invalid role. Select 'student' or 'faculty'.\n")
+                continue
+
+            result = chat_agent.run_query(query, role=user_role)
             intent = result["intent"]
             response_text = result["response_text"]
             data = result["data"]
             
             print(f"\nAssistant:\n{response_text}\n")
+            
+            # Print ChromaDB matches with distance scores if available
+            if intent == "rag" and data.get("internal_matches"):
+                print("ChromaDB Retrieval Match Scores (Distance):")
+                for i, match in enumerate(data["internal_matches"], 1):
+                    src = match["metadata"].get("source", "Unknown")
+                    dist = match.get("distance", 0.0)
+                    print(f"  [{i}] Source: {src} | Distance: {dist:.4f}")
+                print()
             
             # CRITICAL Confirmation prompt
             confirm = input("Shall I proceed and log this recommendation? (yes/no): ").strip().lower()

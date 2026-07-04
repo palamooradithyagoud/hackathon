@@ -52,7 +52,7 @@ class ChatAgent:
             
         return {"intent": "rag", "names": [], "topic": query}
 
-    def run_query(self, query: str) -> dict:
+    def run_query(self, query: str, role: str = "student") -> dict:
         """Classifies, routes, and processes the query, returning structured response data."""
         from utils.helpers import sanitize_user_query
         query = sanitize_user_query(query)
@@ -177,7 +177,7 @@ class ChatAgent:
             
         else:
             # Fallback to standard RAG Faculty Search
-            rag_res = self.rag.run(query)
+            rag_res = self.rag.run(query, role=role)
             return {
                 "intent": "rag",
                 "response_text": rag_res["response_text"],

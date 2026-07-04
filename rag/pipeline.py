@@ -18,12 +18,12 @@ class RagPipeline:
         self.tavily = TavilyService()
         self.arxiv = ArxivService()
 
-    def run(self, query: str) -> dict:
+    def run(self, query: str, role: str = "student") -> dict:
         """
         Executes the full RAG pipeline:
         ChromaDB Search -> Reranker check -> (Optional Tavily + arXiv fallback) -> LLM Synthesis
         """
-        logger.info(f"Starting RAG pipeline for query: '{query}'")
+        logger.info(f"Starting RAG pipeline for query: '{query}' in {role.upper()} mode")
         
         # 1. Retrieve from ChromaDB
         db_results = self.retriever.retrieve(query)
@@ -82,6 +82,20 @@ class RagPipeline:
         internal_context = "\n\n".join(context_parts)
         
         # Construct LLM prompt
+        tone_instruction = ""
+        if role == "student":
+            tone_instruction = (
+                "- Adapt tone for a STUDENT: Use clear, encouraging, accessible language. "
+                "Briefly explain any advanced concepts or acronyms. Frame the matching faculty "
+                "members as potential advisors or mentors, and mention how students could get involved."
+            )
+        else:
+            tone_instruction = (
+                "- Adapt tone for a FACULTY member: Use advanced academic terminology, citation-level depth, "
+                "and reference specific research methodologies and venue information. Focus on potential "
+                "collaboration, grant alignments, and peer-to-peer synergy."
+            )
+
         system_prompt = (
             "You are a helpful Research Assistant RAG agent at our University. Your goal is to help "
             "users find faculty members and understand their expertise.\n"
@@ -95,7 +109,8 @@ class RagPipeline:
             "- Hide similarity/distance scores from the user. Instead, explain matches qualitatively.\n"
             "- If fallback intelligence is active, compare the external global research trends with the local faculty "
             "profiles, explain that local matches are limited but recommend the closest candidates anyway based on overlap.\n"
-            "- Be concise, direct, and academic in tone."
+            f"{tone_instruction}\n"
+            "- Be concise, direct, and professional."
         )
         
         if is_fallback_active:

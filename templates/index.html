@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Faculty Research Intelligence Platform — AI-powered research assistant for Vardhaman University faculty and students.">
+  <meta name="keywords" content="faculty research, AI assistant, RAG, research intelligence, academic collaboration">
+  <title>FRIP — Faculty Research Intelligence Platform</title>
+
+  <link rel="stylesheet" href="../static/css/variables.css">
+  <link rel="stylesheet" href="../static/css/base.css">
+  <link rel="stylesheet" href="../static/css/animations.css">
+  <link rel="stylesheet" href="../static/css/responsive.css">
+  <style>
+    /* ── Landing-specific styles ── */
+    body { overflow-y: auto; overflow-x: hidden; }
+
+    /* ── Hero ── */
+    .landing-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--space-8);
+      background: rgba(11,17,32,0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      z-index: 200;
+    }
+
+    .nav-logo { display: flex; align-items: center; gap: var(--space-3); text-decoration: none; }
+    .nav-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(79,70,229,0.4);
+    }
+    .nav-logo-icon svg { width: 20px; height: 20px; color: white; }
+    .nav-logo-text { font-size: var(--text-sm); font-weight: var(--weight-bold); color: var(--text-primary); }
+
+    .nav-links { display: flex; align-items: center; gap: var(--space-6); }
+    .nav-links a { font-size: var(--text-sm); color: var(--text-muted); text-decoration: none; transition: color var(--ease-fast); }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    .nav-cta { display: flex; align-items: center; gap: var(--space-3); }
+
+    /* ── Hero Section ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px var(--space-8) var(--space-16);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: var(--gradient-glow);
+      pointer-events: none; z-index: 0;
+    }
+
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      animation: fade-in-up 0.8s ease forwards;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-1) var(--space-4);
+      background: var(--color-primary-light);
+      border: 1px solid rgba(79,70,229,0.3);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs); font-weight: var(--weight-medium);
+      color: var(--color-primary);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero-badge::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 2s ease infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: var(--weight-extrabold);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-5);
+    }
+
+    .hero-subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto var(--space-8);
+      line-height: var(--leading-relaxed);
+    }
+
+    .hero-cta {
+      display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;
+    }
+
+    /* ── Stats Strip ── */
+    .stats-strip {
+      display: flex; justify-content: center; gap: var(--space-12);
+      padding: var(--space-8) var(--space-8);
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stat-strip-item { text-align: center; }
+    .stat-strip-num {
+      font-size: var(--text-3xl); font-weight: var(--weight-extrabold);
+      background: var(--gradient-primary);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-strip-label { font-size: var(--text-sm); color: var(--text-muted); margin-top: var(--space-1); }
+
+    /* ── Sections ── */
+    .landing-section {
+      padding: var(--space-20) var(--space-8);
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      font-size: var(--text-xs); font-weight: var(--weight-semibold);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--color-accent); margin-bottom: var(--space-4);
+    }
+
+    .section-heading {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: var(--weight-bold);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+
+    .section-desc {
+      font-size: var(--text-base); color: var(--text-muted);
+      max-width: 520px; line-height: var(--leading-relaxed);
+      margin-bottom: var(--space-10);
+    }
+
+    /* ── Features Grid ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+    }
+
+    .feature-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      transition: all var(--ease-default);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--gradient-primary);
+      opacity: 0; transition: opacity var(--ease-default);
+    }
+
+    .feature-card:hover {
+      border-color: rgba(79,70,229,0.3);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-title { font-size: var(--text-base); font-weight: var(--weight-semibold); margin-bottom: var(--space-2); }
+    .feature-desc  { font-size: var(--text-sm); color: var(--text-muted); line-height: var(--leading-relaxed); }
+
+    /* ── How It Works ── */
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5);
+      position: relative;
+    }
+
+    .steps-grid::before {
+      content: '';
+      position: absolute; top: 28px; left: 10%; right: 10%;
+      height: 1px; background: var(--border-color);
+      z-index: 0;
+    }
+
+    .step-item { text-align: center; position: relative; z-index: 1; }
+
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--bg-surface); border: 2px solid var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--text-lg); font-weight: var(--weight-bold);
+      color: var(--color-primary); margin: 0 auto var(--space-4);
+      box-shadow: 0 0 0 4px var(--color-primary-light);
+    }
+
+    .step-title { font-size: var(--text-sm); font-weight: var(--weight-semibold); margin-bottom: var(--space-2); }
+    .step-desc  { font-size: var(--text-xs); color: var(--text-muted); line-height: var(--leading-relaxed); }
+
+    /* ── Tech Stack ── */
+    .tech-grid {
+      display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center;
+    }
+
+    .tech-pill {
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm); font-weight: var(--weight-medium);
+      color: var(--text-secondary);
+      transition: all var(--ease-fast);
+    }
+
+    .tech-pill:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    /* ── Demo CTA Banner ── */
+    .cta-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-12) var(--space-8);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--gradient-hero);
+      pointer-events: none;
+    }
+
+    .cta-banner-content { position: relative; z-index: 1; }
+
+    /* ── Footer ── */
+    .landing-footer {
+      padding: var(--space-8) var(--space-8) var(--space-5);
+      border-top: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1200px; margin: 0 auto;
+      color: var(--text-faint); font-size: var(--text-xs);
+      flex-wrap: wrap; gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .landing-nav { padding: 0 var(--space-4); }
+      .nav-links { display: none; }
+      .hero { padding: 80px var(--space-4) var(--space-10); }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid::before { display: none; }
+      .stats-strip { gap: var(--space-6); flex-wrap: wrap; padding: var(--space-6); }
+      .landing-section { padding: var(--space-12) var(--space-4); }
+      .landing-footer { flex-direction: column; align-items: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav class="landing-nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo" aria-label="FRIP Home">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">FRIP</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#tech-stack">Tech Stack</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+
+  <div class="nav-cta">
+    <button class="btn btn-ghost btn-sm" data-action="theme-toggle" aria-label="Toggle theme"></button>
+    <a href="chat.html" class="btn btn-primary btn-sm ripple">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      Try Demo
+    </a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero" aria-label="Hero section">
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>Production-Grade AI Research Platform</span>
+    </div>
+
+    <h1 class="hero-title">
+      Intelligent Faculty Research<br>
+      <span class="text-gradient">Discovery & Analysis</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Ask any research question in plain English. Get answers grounded in real faculty publications,
+      detect collaboration opportunities, and analyze research gaps with AI-powered intelligence.
+    </p>
+
+    <div class="hero-cta">
+      <a href="chat.html" class="btn btn-primary btn-lg ripple" id="hero-chat-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Start Chatting
+      </a>
+      <a href="dashboard.html" class="btn btn-ghost btn-lg" id="hero-dashboard-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        View Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats Strip ── -->
+<div class="stats-strip" role="region" aria-label="Platform statistics">
+  <div class="stat-strip-item">
+    <div class="stat-strip-num" id="stat-papers">13</div>
+    <div class="stat-strip-label">Research Papers</div>
+  </div>
+  <div class="stat-strip-item">
+    <div class="stat-strip-num" id="stat-chunks">673</div>
+    <div class="stat-strip-label">Vector Chunks</div>
+  </div>
+  <div class="stat-strip-item">
+    <div class="stat-strip-num" id="stat-faculty">8</div>
+    <div class="stat-strip-label">Faculty Profiles</div>
+  </div>
+  <div class="stat-strip-item">
+    <div class="stat-strip-num" id="stat-domains">11</div>
+    <div class="stat-strip-label">Research Domains</div>
+  </div>
+</div>
+
+<!-- ── Features ── -->
+<section class="landing-section" id="features" aria-label="Features">
+  <div style="text-align:center; margin-bottom: var(--space-12);">
+    <div class="section-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Platform Features
+    </div>
+    <h2 class="section-heading">Everything you need for<br>research intelligence</h2>
+    <p class="section-desc" style="margin: var(--space-4) auto 0;">
+      From basic Q&A to deep research gap analysis, the platform provides a complete
+      suite of AI-powered tools for academic research management.
+    </p>
+  </div>
+
+  <div class="features-grid stagger">
+    <!-- Feature 1 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: var(--color-primary-light); color: var(--color-primary);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <h3 class="feature-title">RAG-Powered Chat</h3>
+      <p class="feature-desc">Ask questions about faculty research in natural language. Answers are grounded in real publication data with source citations.</p>
+    </div>
+
+    <!-- Feature 2 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: var(--color-accent-light); color: var(--color-accent);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <h3 class="feature-title">Research Gap Analysis</h3>
+      <p class="feature-desc">Identify unexplored research areas by comparing local faculty expertise against global research frontiers and trends.</p>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: var(--color-success-light); color: var(--color-success);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <h3 class="feature-title">Collaboration Finder</h3>
+      <p class="feature-desc">Discover collaboration opportunities between faculty members based on research domain overlaps and complementary expertise.</p>
+    </div>
+
+    <!-- Feature 4 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: var(--color-warning-light); color: var(--color-warning);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3 class="feature-title">Professor Intelligence</h3>
+      <p class="feature-desc">Full analysis pipeline: trend analysis, workload checking, project suggestion generation, and collaboration email drafting.</p>
+    </div>
+
+    <!-- Feature 5 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: rgba(139,92,246,0.15); color: #8B5CF6;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/></svg>
+      </div>
+      <h3 class="feature-title">Citation Network</h3>
+      <p class="feature-desc">Interactive force-directed graph visualizing publication connections, co-authorship, and research domain clusters.</p>
+    </div>
+
+    <!-- Feature 6 -->
+    <div class="feature-card card-enter">
+      <div class="feature-icon" style="background: rgba(236,72,153,0.15); color: #EC4899;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <h3 class="feature-title">Research Analytics</h3>
+      <p class="feature-desc">Publication trends, domain breakdowns, faculty expertise maps, and activity analytics with real-time data visualization.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section class="landing-section" id="how-it-works" aria-label="How it works"
+  style="background: var(--bg-surface); max-width: 100%; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: var(--space-20) var(--space-8);">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="text-align:center; margin-bottom: var(--space-12);">
+      <div class="section-eyebrow">How It Works</div>
+      <h2 class="section-heading">From question to insight in seconds</h2>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-title">Ask Your Question</div>
+        <div class="step-desc">Type any research question in plain English — about a faculty member, domain, or topic.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-title">Vector Search</div>
+        <div class="step-desc">ChromaDB retrieves the most semantically similar chunks from 673+ indexed research paper segments.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-title">AI Synthesis</div>
+        <div class="step-desc">Llama-4-Scout-17B synthesizes a grounded answer with citations from real faculty publications.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-title">Take Action</div>
+        <div class="step-desc">Confirm project suggestions, generate collaboration emails, and log insights to your database.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Tech Stack ── -->
+<section class="landing-section" id="tech-stack" aria-label="Technology stack">
+  <div style="text-align:center; margin-bottom: var(--space-8);">
+    <div class="section-eyebrow">Built With</div>
+    <h2 class="section-heading">Production-grade technology stack</h2>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-pill">🧠 Meta Llama-4-Scout-17B</div>
+    <div class="tech-pill">⚡ Groq Inference</div>
+    <div class="tech-pill">🔍 ChromaDB Cloud</div>
+    <div class="tech-pill">🚀 FastAPI</div>
+    <div class="tech-pill">🐍 Python 3.12</div>
+    <div class="tech-pill">🗄️ SQLite / PostgreSQL</div>
+    <div class="tech-pill">🌐 Tavily Web Search</div>
+    <div class="tech-pill">📚 arXiv Integration</div>
+    <div class="tech-pill">☁️ Vercel Deployment</div>
+    <div class="tech-pill">📄 pypdf Parsing</div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ── -->
+<section class="landing-section" aria-label="Call to action">
+  <div class="cta-banner">
+    <div class="cta-banner-content">
+      <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
+        Ready to explore faculty research?
+      </h2>
+      <p style="color: var(--text-muted); margin-bottom: var(--space-8); max-width: 480px; margin-left: auto; margin-right: auto;">
+        Ask your first question, discover collaborators, or analyze research gaps — all in one platform.
+      </p>
+      <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+        <a href="chat.html" class="btn btn-primary btn-lg ripple" id="cta-chat-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Start AI Chat
+        </a>
+        <a href="research_gap.html" class="btn btn-ghost btn-lg" id="cta-gap-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyze Research Gap
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="landing-footer" role="contentinfo">
+  <div>
+    <span>© 2026 Faculty Research Intelligence Platform</span>
+    <span style="margin: 0 var(--space-3); color: var(--border-color);">·</span>
+    <span>Built for Vardhaman College of Engineering</span>
+  </div>
+  <div style="display: flex; gap: var(--space-5);">
+    <a href="dashboard.html" style="color: var(--text-faint); font-size: var(--text-xs);">Dashboard</a>
+    <a href="chat.html"      style="color: var(--text-faint); font-size: var(--text-xs);">Chat</a>
+    <a href="faculty.html"   style="color: var(--text-faint); font-size: var(--text-xs);">Faculty</a>
+    <a href="analytics.html" style="color: var(--text-faint); font-size: var(--text-xs);">Analytics</a>
+  </div>
+</footer>
+
+<script type="module">
+  import { theme } from '../static/js/theme.js';
+  import { getStats } from '../static/js/api.js';
+  import { animateNumber } from '../static/js/utils.js';
+
+  theme.init();
+
+  // Intersection Observer for card animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.animationPlayState = 'running';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card-enter').forEach(el => {
+    el.style.animationPlayState = 'paused';
+    observer.observe(el);
+  });
+
+  // Load real stats
+  async function loadStats() {
+    try {
+      const data = await getStats();
+      const paperEl  = document.getElementById('stat-papers');
+      const chunkEl  = document.getElementById('stat-chunks');
+      const facEl    = document.getElementById('stat-faculty');
+      const domEl    = document.getElementById('stat-domains');
+
+      if (paperEl) animateNumber(paperEl, 0, data.paper_count || 13);
+      if (chunkEl) animateNumber(chunkEl, 0, data.chunk_count || 673);
+      if (facEl)   animateNumber(facEl,   0, data.faculty_count || 8);
+      if (domEl)   animateNumber(domEl,   0, data.domain_count || 11);
+    } catch (_) {
+      // Keep static values on error
+    }
+  }
+
+  loadStats();
+</script>
+</body>
+</html>

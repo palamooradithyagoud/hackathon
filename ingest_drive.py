@@ -16,13 +16,26 @@ import chromadb
 # Load environment variables
 load_dotenv()
 
-# Google Drive file IDs and names (extracted from folder listing)
+# Google Drive folder ID — all files are sourced from here
+GDRIVE_FOLDER_ID = "1IjFWghs6FKGPhVTCHksc_pk_8nrmWjHm"
+
+# Google Drive file IDs and names (full folder listing, updated 2026-07-05)
 GDRIVE_FILES = [
+    # --- Original 5 ---
     ("1Oq7kFuaCq3fA4RLgAz8QU7YKFHYBBgJA", "Agri-Ai-Intelligent-Plant-Disease-Surveillance-and-Predictive-Forecasting_PADMAJA.pdf"),
-    ("1CktTi4qJb42k1dUOqrzvkaGwGZpjhP_b", "Comprehensive_Models_Towards_for_Feature_venkateshwara.pdf"),
-    ("15etGUU4Zu2WX15r8jWrwRJbf2aV18K9h", "Integrating_Named_Data_Networking_with_IoT_MADHURYA.pdf"),
-    ("1_k4HgIK9iK10_CZlEhrlWZo0H5ggxRwm", "IOT_based_health_monitoring_gagandeep.pdf"),
-    ("1nWR7O3aq1iOeu4Zo4IdBAR7TLNuH0VSs", "Measuring_Internet_Energy_Consumption_vasantha.pdf"),
+    ("1CktTi4qJb42k1dUOqrzvkaGwGZpjhP_b", "Comprehensive Models Towards for Feature_venkateshwara.pdf"),
+    ("15etGUU4Zu2WX15r8jWrwRJbf2aV18K9h", "Integrating Named Data Networking with IoT-Based Internet _MADHURYA.pdf"),
+    ("1_k4HgIK9iK10_CZlEhrlWZo0H5ggxRwm", "IOT based health monitoring_gagandeep.pdf"),
+    ("1nWR7O3aq1iOeu4Zo4IdBAR7TLNuH0VSs", "Measuring Internet Energy Consumption at The Edge and Core_vasantha.pdf"),
+    # --- New 8 (added 2026-07-05) ---
+    ("1Uc-dlzXX416zXELIsykXlkbJEpQAQs4H", "Accident Detection and Alert System Using Big Data Analytics_SRININVAS_GONGULA.pdf"),
+    ("1v7uAFa0kFtaOW8Sxhw7ha8tHgDYEZYfa", "Characterizing Ipv6 Adoption Trends Through Longitudinal _RAVIKUMAR.pdf"),
+    ("13jUTybvLdBTZzRL9yHulOfzfjDFIX0Ke", "economics.pdf"),
+    ("1AvYpc8Eiqzga8ejCqR99Bihy6SNgJ1ZA", "From CNNs to diffusion models_MANZOOR.pdf"),
+    ("1ZM0Usj9a6kGbew13obOIPu4dJTPRRiyn", "frontiers.pdf"),
+    ("1XYMi8YueZ6WjXjgglqjmS63wA_fZu0X-", "heart_disease.pdf"),
+    ("1mK-gNIeLcgJP1ngfTYQ0VFua8DSgt-LX", "procedia.pdf"),
+    ("1npz0m0gHZwCkUlo2A59HUOyOMH6WqtLB", "science_direct.pdf"),
 ]
 
 

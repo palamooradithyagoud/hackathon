@@ -1,0 +1,139 @@
+/* ============================================================
+   responsive.css — Responsive Breakpoints
+   ============================================================ */
+
+/* ── Desktop Large (1280px+) ── */
+@media (min-width: 1280px) {
+  .content-wrapper { padding: 0 var(--space-4); }
+}
+
+/* ── Desktop Medium (1024px - 1280px) ── */
+@media (max-width: 1024px) {
+  .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-main-grid  { grid-template-columns: 1fr; }
+  .analytics-grid       { grid-template-columns: 1fr; }
+  .grid-4               { grid-template-columns: repeat(2, 1fr); }
+  .suggested-questions  { grid-template-columns: 1fr; }
+}
+
+/* ── Tablet (768px - 1024px) ── */
+@media (max-width: 768px) {
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform var(--ease-default);
+    z-index: var(--z-sidebar);
+    width: var(--sidebar-width) !important;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .sidebar.mobile-open { transform: translateX(0); }
+  .sidebar-toggle { display: none; }
+  .sidebar-overlay { display: none; }
+  .sidebar-overlay.active { display: block; }
+
+  /* Navbar */
+  .hamburger       { display: flex; }
+  .navbar-search   { display: none; }
+  .model-badge     { display: none; }
+  .navbar          { padding: 0 var(--space-4); }
+
+  /* Page */
+  .page-content    { padding: var(--space-4); }
+  .grid-2          { grid-template-columns: 1fr; }
+  .grid-3          { grid-template-columns: 1fr; }
+  .grid-4          { grid-template-columns: repeat(2, 1fr); }
+
+  /* Chat */
+  .chat-page       { max-width: 100%; }
+  .messages-area   { padding: var(--space-4) var(--space-3); }
+  .chat-input-area { padding: var(--space-3); }
+  .suggested-questions { grid-template-columns: 1fr; }
+  .history-panel   { display: none; }
+
+  /* Dashboard */
+  .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+  .quick-actions { grid-template-columns: repeat(4, 1fr); }
+
+  /* Faculty */
+  .faculty-grid { grid-template-columns: 1fr; }
+  .faculty-controls { flex-direction: column; align-items: stretch; }
+
+  /* Graph */
+  .graph-search input { width: 160px; }
+  .graph-search input:focus { width: 200px; }
+  .node-detail-panel { width: 240px; }
+
+  /* Analytics */
+  .donut-wrapper { flex-direction: column; gap: var(--space-4); }
+  .bar-label { width: 80px; font-size: 10px; }
+}
+
+/* ── Mobile (< 480px) ── */
+@media (max-width: 480px) {
+  /* Layout */
+  .page-content { padding: var(--space-3); }
+  .panel        { padding: var(--space-4); }
+
+  /* Typography */
+  h1 { font-size: var(--text-2xl); }
+  h2 { font-size: var(--text-xl); }
+
+  /* Grid */
+  .grid-4 { grid-template-columns: 1fr; }
+  .dashboard-stats-grid { grid-template-columns: 1fr; gap: var(--space-3); }
+
+  /* Quick actions */
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+
+  /* Chat */
+  .message-bubble { max-width: 95%; }
+  .send-btn { width: 32px; height: 32px; }
+  .chat-welcome-icon { width: 56px; height: 56px; }
+  .chat-welcome h2 { font-size: var(--text-xl); }
+
+  /* Buttons */
+  .btn-lg { padding: var(--space-3) var(--space-5); font-size: var(--text-sm); }
+
+  /* Stat cards */
+  .stat-value { font-size: var(--text-2xl); }
+
+  /* Faculty */
+  .faculty-card { padding: var(--space-4); }
+
+  /* Modals */
+  .modal-box { padding: var(--space-5); margin: var(--space-3); }
+
+  /* Graph */
+  .graph-legend { bottom: var(--space-3); left: var(--space-3); }
+  .graph-zoom-controls { bottom: var(--space-3); right: var(--space-3); }
+  .graph-toolbar { gap: var(--space-2); padding: var(--space-2) var(--space-3); }
+  .node-detail-panel { display: none; }
+
+  /* Nav */
+  .navbar-actions .icon-btn:not(.theme-toggle):not(:last-child) { display: none; }
+
+  /* Breadcrumb */
+  .breadcrumb-item:not(:last-child) { display: none; }
+  .breadcrumb-sep { display: none; }
+}
+
+/* ── Print Styles ── */
+@media print {
+  .sidebar, .navbar, .chat-input-area, .sidebar-overlay { display: none !important; }
+  .main-area { margin-left: 0 !important; }
+  .page-content { padding: 0 !important; }
+  body { background: white; color: black; }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

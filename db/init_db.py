@@ -15,6 +15,20 @@ def init_database():
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables created successfully.")
         
+        # Check/add role column to query_logs for backwards compatibility
+        from sqlalchemy import text
+        from db.database import SessionLocal
+        db = SessionLocal()
+        try:
+            db.execute(text("ALTER TABLE query_logs ADD COLUMN role VARCHAR(50) DEFAULT 'student'"))
+            db.commit()
+            logger.info("Migrated database: role column added to query_logs.")
+        except Exception:
+            # Column already exists or other database engines where it's handled differently
+            db.rollback()
+        finally:
+            db.close()
+        
         # Seed workloads if table is empty
         from db.database import SessionLocal
         db = SessionLocal()

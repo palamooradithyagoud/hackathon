@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Profile — Faculty Research Intelligence Platform</title>
+  <link rel="stylesheet" href="../static/css/variables.css">
+  <link rel="stylesheet" href="../static/css/base.css">
+  <link rel="stylesheet" href="../static/css/layout.css">
+  <link rel="stylesheet" href="../static/css/sidebar.css">
+  <link rel="stylesheet" href="../static/css/navbar.css">
+  <link rel="stylesheet" href="../static/css/cards.css">
+  <link rel="stylesheet" href="../static/css/animations.css">
+  <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+      <a href="index.html" class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">FRIP</span>
+          <span class="logo-tagline">Vardhaman Univ</span>
+        </div>
+      </a>
+      <div class="sidebar-nav">
+        <span class="nav-section-label">General</span>
+        <a href="dashboard.html" class="nav-item" data-label="Dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="chat.html" class="nav-item" data-label="AI Chat">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span class="nav-label">AI Chat</span>
+        </a>
+        <a href="faculty.html" class="nav-item active" data-label="Faculty Explorer">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span class="nav-label">Faculty Explorer</span>
+        </a>
+        <span class="nav-section-label">Analysis</span>
+        <a href="research_gap.html" class="nav-item" data-label="Gap Analysis">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <span class="nav-label">Research Gap</span>
+        </a>
+        <a href="collaboration.html" class="nav-item" data-label="Collaboration">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </span>
+          <span class="nav-label">Collaboration</span>
+        </a>
+        <a href="citation_graph.html" class="nav-item" data-label="Citation Graph">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </span>
+          <span class="nav-label">Citation Graph</span>
+        </a>
+        <a href="analytics.html" class="nav-item" data-label="Analytics">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          <span class="nav-label">Analytics</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost btn-icon theme-toggle" data-action="theme-toggle" aria-label="Toggle theme"></button>
+      </div>
+      <button class="sidebar-toggle" aria-label="Toggle sidebar collapse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+    </aside>
+
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main Area -->
+    <main class="main-area">
+      <!-- Top Navigation -->
+      <nav class="navbar" role="navigation" aria-label="Top navigation">
+        <button class="hamburger" aria-label="Open navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <div class="breadcrumb-item"><a href="index.html">FRIP</a></div>
+          <div class="breadcrumb-sep">/</div>
+          <div class="breadcrumb-item"><a href="faculty.html">Faculty</a></div>
+          <div class="breadcrumb-sep">/</div>
+          <div class="breadcrumb-item">Profile</div>
+        </div>
+        <div class="navbar-actions">
+          <div class="model-badge">Llama-4-Scout</div>
+          <div class="user-avatar" title="User Profile">AD</div>
+        </div>
+      </nav>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="content-wrapper" style="max-width: 800px;">
+          <!-- Profile Card -->
+          <div class="profile-card" style="margin-bottom: var(--space-6);">
+            <div class="profile-card-banner"></div>
+            <div class="profile-card-content">
+              <div class="profile-card-avatar" style="background:#4F46E5;">AD</div>
+              <h2 class="profile-card-name" id="prof-name">Faculty Member</h2>
+              <p class="profile-card-role" id="prof-role">Department of Engineering</p>
+              
+              <div class="flex-wrap" style="margin-top: var(--space-3);" id="prof-tags">
+                <span class="tag">Research</span>
+                <span class="tag">Faculty</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Publication Panel -->
+          <div class="panel">
+            <h3 class="section-title" style="margin-bottom: var(--space-3);">Publication Record</h3>
+            <div id="prof-publication" style="font-size: var(--text-sm); color: var(--text-secondary);">
+              Loading publication index...
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="../static/js/app.js"></script>
+  <script type="module">
+    import { stringToColor, getInitials } from '../static/js/utils.js';
+    
+    // Simple load logic based on query params
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const name = urlParams.get('name') || 'Dr. Padmaja';
+      const role = urlParams.get('role') || 'Agriculture AI / Computer Vision';
+      const paper = urlParams.get('paper') || 'Agri-Ai-Intelligent-Plant-Disease-Surveillance-and-Predictive-Forecasting_PADMAJA.pdf';
+
+      const nameEl = document.getElementById('prof-name');
+      const roleEl = document.getElementById('prof-role');
+      const paperEl = document.getElementById('prof-publication');
+      const avatarEl = document.querySelector('.profile-card-avatar');
+
+      if (nameEl) nameEl.textContent = name;
+      if (roleEl) roleEl.textContent = role;
+      if (paperEl) paperEl.textContent = paper;
+      if (avatarEl) {
+        avatarEl.textContent = getInitials(name);
+        avatarEl.style.background = stringToColor(name);
+      }
+    });
+  </script>
+</body>
+</html>
