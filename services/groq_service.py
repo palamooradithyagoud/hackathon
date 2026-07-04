@@ -59,6 +59,10 @@ class GroqService:
                     return response.choices[0].message.content
                 except Exception as fallback_err:
                     logger.error(f"Groq fallback model {fallback_model} also failed: {fallback_err}")
+                    raise RuntimeError(
+                        "Groq API daily token quota exceeded (100,000 TPD limit). "
+                        "Please wait for your limit to reset, or configure a new GROQ_API_KEY in .env."
+                    ) from fallback_err
             
             logger.error(f"Groq API error: {e}")
             raise
@@ -95,6 +99,10 @@ class GroqService:
                     return response.choices[0].message.content
                 except Exception as fallback_err:
                     logger.error(f"Groq fallback model {fallback_model} also failed: {fallback_err}")
+                    raise RuntimeError(
+                        "Groq API daily token quota exceeded (100,000 TPD limit). "
+                        "Please wait for your limit to reset, or configure a new GROQ_API_KEY in .env."
+                    ) from fallback_err
             
             logger.error(f"Groq API error: {e}")
             raise
