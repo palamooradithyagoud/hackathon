@@ -105,4 +105,4 @@ Deploy to Vercel instantly using the preconfigured [vercel.json](vercel.json):
 ```bash
 vercel deploy
 ```
-Ensure env variables match those in `.env`.
+Ensure environment variables match those in `.env`.
