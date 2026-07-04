@@ -28,8 +28,13 @@ def get_logger(name: str = "faculty_rag") -> logging.Logger:
 def append_jsonl(filepath: Path, data: dict) -> None:
     """Append a JSON object as a line to a JSONL file."""
     data["timestamp"] = datetime.now(timezone.utc).isoformat()
-    with open(filepath, "a", encoding="utf-8") as f:
-        f.write(json.dumps(data, ensure_ascii=False) + "\n")
+    try:
+        # Ensure the directory exists
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+        with open(filepath, "a", encoding="utf-8") as f:
+            f.write(json.dumps(data, ensure_ascii=False) + "\n")
+    except OSError as e:
+        logger.error(f"Failed to append to log file {filepath}: {e}. Standard log payload: {data}")
 
 
 def log_decision(decision: dict) -> None:

@@ -31,14 +31,36 @@ class Settings:
         self.TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
 
         # --- Database ---
-        self.DATABASE_URL: str = os.getenv(
-            "DATABASE_URL", f"sqlite:///{_PROJECT_ROOT / 'faculty_rag.db'}"
-        )
+        database_url = os.getenv("DATABASE_URL")
+        if not database_url:
+            if os.getenv("VERCEL"):
+                database_url = "sqlite:////tmp/faculty_rag.db"
+            else:
+                database_url = f"sqlite:///{_PROJECT_ROOT / 'faculty_rag.db'}"
+        elif database_url.startswith("sqlite://") and os.getenv("VERCEL"):
+            # Extract database filename and use it in /tmp
+            db_name = database_url.split("/")[-1] or "faculty_rag.db"
+            database_url = f"sqlite:////tmp/{db_name}"
+
+        self.DATABASE_URL: str = database_url
 
         # --- Paths ---
         self.PROJECT_ROOT: Path = _PROJECT_ROOT
-        self.LOGS_DIR: Path = _PROJECT_ROOT / "logs"
-        self.LOGS_DIR.mkdir(exist_ok=True)
+        
+        if os.getenv("VERCEL"):
+            self.LOGS_DIR: Path = Path("/tmp/logs")
+        else:
+            self.LOGS_DIR: Path = _PROJECT_ROOT / "logs"
+
+        try:
+            self.LOGS_DIR.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            # Fallback to /tmp/logs if the default logs directory cannot be created (e.g. read-only filesystem)
+            self.LOGS_DIR = Path("/tmp/logs")
+            try:
+                self.LOGS_DIR.mkdir(parents=True, exist_ok=True)
+            except OSError:
+                pass
 
         # --- RAG tuning ---
         self.RAG_TOP_K: int = int(os.getenv("RAG_TOP_K", "8"))
