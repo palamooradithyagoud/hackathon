@@ -81,6 +81,26 @@ export function injectRoleBadge(containerId = 'sidebar-role-badge', role = getRo
  */
 export function setupAuth(badgeContainerId = 'sidebar-role-badge') {
   const role = requireRole();
-  if (role) injectRoleBadge(badgeContainerId, role);
+  if (role) {
+    injectRoleBadge(badgeContainerId, role);
+    
+    if (role === 'student') {
+      // Hide all sidebar links to faculty_chat.html
+      document.querySelectorAll('a[href*="faculty_chat.html"]').forEach(link => {
+        link.style.setProperty('display', 'none', 'important');
+      });
+
+      // Hide modal chat button on Faculty page
+      const modalChatBtn = document.getElementById('modal-chat-btn');
+      if (modalChatBtn) {
+        modalChatBtn.style.setProperty('display', 'none', 'important');
+      }
+
+      // Guard direct page access for student
+      if (window.location.pathname.includes('faculty_chat.html')) {
+        window.location.replace('dashboard.html');
+      }
+    }
+  }
   return role;
 }
