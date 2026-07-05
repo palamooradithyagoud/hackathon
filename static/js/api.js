@@ -16,9 +16,13 @@ const BASE_URL = (window.location.hostname === 'localhost' || window.location.ho
  */
 async function apiFetch(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
+  const headers = { ...options.headers };
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+  }
   const config = {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
+    headers,
   };
 
   const response = await fetch(url, config);
@@ -160,3 +164,78 @@ export async function searchSemanticScholar(query) {
 export async function fetchCitationGraph(paperId) {
   return apiFetch(`/semantic/graph/${paperId}`);
 }
+
+/**
+ * Post a new announcement.
+ */
+export async function postAnnouncement(titleOrData, content, facultyName, category, priority, attachment, targetAudience, targetDept, targetYear, targetSec, expiryDate, status) {
+  let bodyObj;
+  if (typeof titleOrData === 'object' && titleOrData !== null) {
+    bodyObj = titleOrData;
+  } else {
+    bodyObj = {
+      title: titleOrData,
+      content,
+      faculty_name: facultyName,
+      category,
+      priority: priority || 'Low',
+      attachment,
+      target_audience: targetAudience || 'All',
+      target_dept: targetDept,
+      target_year: targetYear,
+      target_sec: targetSec,
+      expiry_date: expiryDate,
+      status: status || 'published'
+    };
+  }
+  return apiFetch('/announcements', {
+    method: 'POST',
+    body: JSON.stringify(bodyObj),
+  });
+}
+
+/**
+ * Get all announcements with filtering.
+ */
+export async function getAnnouncements(params = {}) {
+  const searchParams = new URLSearchParams();
+  if (params.role) searchParams.append('role', params.role);
+  if (params.department) searchParams.append('department', params.department);
+  if (params.year) searchParams.append('year', params.year);
+  if (params.section) searchParams.append('section', params.section);
+  
+  const query = searchParams.toString();
+  return apiFetch(`/announcements${query ? '?' + query : ''}`);
+}
+
+/**
+ * Update an existing announcement.
+ */
+export async function updateAnnouncement(id, data) {
+  return apiFetch(`/announcements/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete an announcement.
+ */
+export async function deleteAnnouncement(id) {
+  return apiFetch(`/announcements/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
+ * Upload an attachment file.
+ */
+export async function uploadAttachment(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return apiFetch('/announcements/upload_attachment', {
+    method: 'POST',
+    body: formData,
+  });
+}
+

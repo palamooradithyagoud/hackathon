@@ -5,7 +5,7 @@ Creates all database tables in SQLite or PostgreSQL.
 
 from db.database import engine, cache_engine, Base
 # Import models to register them
-from db.models import QueryLog, Recommendation, Collaboration, ProjectSuggestion, Feedback, FacultyWorkload, PaperEnrichment, SemanticCache, ChatMessage, PaperChat, FacultyChat
+from db.models import QueryLog, Recommendation, Collaboration, ProjectSuggestion, Feedback, FacultyWorkload, PaperEnrichment, SemanticCache, ChatMessage, PaperChat, FacultyChat, Announcement
 from core.logger import logger
 
 def init_database():
@@ -22,6 +22,7 @@ def init_database():
             ChatMessage.__table__,   # Chat turns for both student and faculty
             PaperChat.__table__,     # Student-Teacher paper discussions
             FacultyChat.__table__,   # Direct student-to-faculty DM messages
+            Announcement.__table__,  # Faculty announcements
         ]
         # Define tables for local cache and workloads (local SQLite)
         cache_tables = [
@@ -46,6 +47,24 @@ def init_database():
              "session_id column added to query_logs"),
             ("ALTER TABLE query_logs ADD COLUMN sources_used TEXT",
              "sources_used column added to query_logs"),
+            ("ALTER TABLE announcements ADD COLUMN category VARCHAR(100)",
+             "category column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN priority VARCHAR(50) DEFAULT 'Low'",
+             "priority column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN attachment VARCHAR(500)",
+             "attachment column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN target_audience VARCHAR(100) DEFAULT 'All'",
+             "target_audience column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN target_dept VARCHAR(100)",
+             "target_dept column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN target_year VARCHAR(100)",
+             "target_year column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN target_sec VARCHAR(100)",
+             "target_sec column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN expiry_date VARCHAR(100)",
+             "expiry_date column added to announcements"),
+            ("ALTER TABLE announcements ADD COLUMN status VARCHAR(50) DEFAULT 'published'",
+             "status column added to announcements"),
         ]
         for sql, label in migrations:
             try:

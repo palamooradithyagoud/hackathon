@@ -85,3 +85,36 @@ class FacultyChatResponse(BaseModel):
     message: str
     timestamp: str
 
+
+class AnnouncementCreate(BaseModel):
+    title: str
+    content: str
+    faculty_name: str
+    category: Optional[str] = None
+    priority: Optional[str] = "Low"
+    attachment: Optional[str] = None
+    target_audience: Optional[str] = "All"
+    target_dept: Optional[str] = None
+    target_year: Optional[str] = None
+    target_sec: Optional[str] = None
+    expiry_date: Optional[str] = None
+    status: Optional[str] = "published"
+
+
+class AnnouncementResponse(BaseModel):
+    id: Optional[int] = None
+    title: str
+    content: str
+    faculty_name: str
+    timestamp: str
+    category: Optional[str] = None
+    priority: Optional[str] = "Low"
+    attachment: Optional[str] = None
+    target_audience: Optional[str] = "All"
+    target_dept: Optional[str] = None
+    target_year: Optional[str] = None
+    target_sec: Optional[str] = None
+    expiry_date: Optional[str] = None
+    status: Optional[str] = "published"
+
+

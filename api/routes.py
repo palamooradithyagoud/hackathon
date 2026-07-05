@@ -15,7 +15,8 @@ from api.schemas import (
     FeedbackRequest, FeedbackResponse, LogItem,
     ProfessorConfirmRequest,
     PaperChatCreate, PaperChatResponse,
-    FacultyChatCreate, FacultyChatResponse
+    FacultyChatCreate, FacultyChatResponse,
+    AnnouncementCreate, AnnouncementResponse
 )
 from agents.chat_agent import ChatAgent
 from memory.memory_store import MemoryStore
@@ -430,3 +431,237 @@ async def get_all_faculty_chats():
     except Exception as e:
         logger.error(f"Failed to fetch all faculty chat threads: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ─────────────────────────────────────────────────────────────────
+# Faculty Announcements (Broadcasting System)
+# ─────────────────────────────────────────────────────────────────
+
+@router.post("/announcements", response_model=AnnouncementResponse)
+async def post_announcement(request: AnnouncementCreate):
+    """Saves a new faculty announcement to the database."""
+    try:
+        from db.database import SessionLocal
+        from db.models import Announcement
+        
+        db = SessionLocal()
+        try:
+            announcement = Announcement(
+                title=request.title,
+                content=request.content,
+                faculty_name=request.faculty_name,
+                category=request.category,
+                priority=request.priority,
+                attachment=request.attachment,
+                target_audience=request.target_audience,
+                target_dept=request.target_dept,
+                target_year=request.target_year,
+                target_sec=request.target_sec,
+                expiry_date=request.expiry_date,
+                status=request.status
+            )
+            db.add(announcement)
+            db.commit()
+            db.refresh(announcement)
+            return AnnouncementResponse(
+                id=announcement.id,
+                title=announcement.title,
+                content=announcement.content,
+                faculty_name=announcement.faculty_name,
+                timestamp=announcement.timestamp.isoformat(),
+                category=announcement.category,
+                priority=announcement.priority,
+                attachment=announcement.attachment,
+                target_audience=announcement.target_audience,
+                target_dept=announcement.target_dept,
+                target_year=announcement.target_year,
+                target_sec=announcement.target_sec,
+                expiry_date=announcement.expiry_date,
+                status=announcement.status
+            )
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"Failed to post announcement: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/announcements", response_model=List[AnnouncementResponse])
+async def get_announcements(
+    role: Optional[str] = None,
+    department: Optional[str] = None,
+    year: Optional[str] = None,
+    section: Optional[str] = None
+):
+    """Retrieves all announcements sorted by timestamp descending, with optional filtering for students."""
+    try:
+        from db.database import SessionLocal
+        from db.models import Announcement
+        from datetime import datetime, timezone
+
+        db = SessionLocal()
+        try:
+            query = db.query(Announcement)
+            if role == "student":
+                query = query.filter(Announcement.status == "published")
+                
+            announcements = (
+                query.order_by(Announcement.timestamp.desc())
+                .all()
+            )
+            
+            filtered = []
+            current_date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            
+            for a in announcements:
+                # Expiry check
+                if role == "student" and a.expiry_date:
+                    if a.expiry_date < current_date_str:
+                        continue
+                
+                # Target audience match check
+                if role == "student":
+                    if a.target_audience == "Department" and department:
+                        if a.target_dept and a.target_dept.lower() != department.lower():
+                            continue
+                    elif a.target_audience == "Year" and year:
+                        if a.target_dept and a.target_dept.lower() != department.lower():
+                            continue
+                        if a.target_year and a.target_year.lower() != year.lower():
+                            continue
+                    elif a.target_audience == "Section" and section:
+                        if a.target_dept and a.target_dept.lower() != department.lower():
+                            continue
+                        if a.target_year and a.target_year.lower() != year.lower():
+                            continue
+                        if a.target_sec and a.target_sec.lower() != section.lower():
+                            continue
+                    elif a.target_audience == "All":
+                        pass
+                    else:
+                        if a.target_audience in ("Department", "Year", "Section"):
+                            continue
+
+                filtered.append(
+                    AnnouncementResponse(
+                        id=a.id,
+                        title=a.title,
+                        content=a.content,
+                        faculty_name=a.faculty_name,
+                        timestamp=a.timestamp.isoformat(),
+                        category=a.category,
+                        priority=a.priority,
+                        attachment=a.attachment,
+                        target_audience=a.target_audience,
+                        target_dept=a.target_dept,
+                        target_year=a.target_year,
+                        target_sec=a.target_sec,
+                        expiry_date=a.expiry_date,
+                        status=a.status
+                    )
+                )
+            return filtered
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error(f"Failed to fetch announcements: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/announcements/{id}", response_model=AnnouncementResponse)
+async def put_announcement(id: int, request: AnnouncementCreate):
+    """Updates an existing faculty announcement."""
+    try:
+        from db.database import SessionLocal
+        from db.models import Announcement
+        
+        db = SessionLocal()
+        try:
+            announcement = db.query(Announcement).filter(Announcement.id == id).first()
+            if not announcement:
+                raise HTTPException(status_code=404, detail="Announcement not found")
+            
+            announcement.title = request.title
+            announcement.content = request.content
+            announcement.faculty_name = request.faculty_name
+            announcement.category = request.category
+            announcement.priority = request.priority
+            announcement.attachment = request.attachment
+            announcement.target_audience = request.target_audience
+            announcement.target_dept = request.target_dept
+            announcement.target_year = request.target_year
+            announcement.target_sec = request.target_sec
+            announcement.expiry_date = request.expiry_date
+            announcement.status = request.status
+            
+            db.commit()
+            db.refresh(announcement)
+            return AnnouncementResponse(
+                id=announcement.id,
+                title=announcement.title,
+                content=announcement.content,
+                faculty_name=announcement.faculty_name,
+                timestamp=announcement.timestamp.isoformat(),
+                category=announcement.category,
+                priority=announcement.priority,
+                attachment=announcement.attachment,
+                target_audience=announcement.target_audience,
+                target_dept=announcement.target_dept,
+                target_year=announcement.target_year,
+                target_sec=announcement.target_sec,
+                expiry_date=announcement.expiry_date,
+                status=announcement.status
+            )
+        finally:
+            db.close()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to update announcement: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/announcements/{id}")
+async def delete_announcement(id: int):
+    """Deletes an announcement from the database."""
+    try:
+        from db.database import SessionLocal
+        from db.models import Announcement
+        
+        db = SessionLocal()
+        try:
+            announcement = db.query(Announcement).filter(Announcement.id == id).first()
+            if not announcement:
+                raise HTTPException(status_code=404, detail="Announcement not found")
+            
+            db.delete(announcement)
+            db.commit()
+            return {"status": "success", "message": "Announcement deleted successfully"}
+        finally:
+            db.close()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to delete announcement: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/announcements/upload_attachment")
+async def upload_attachment_endpoint(file: UploadFile = File(...)):
+    """Uploads an optional attachment file to the static/uploads/ directory."""
+    try:
+        uploads_dir = os.path.join("static", "uploads")
+        os.makedirs(uploads_dir, exist_ok=True)
+        
+        safe_filename = os.path.basename(file.filename)
+        dest_path = os.path.join(uploads_dir, safe_filename)
+        
+        with open(dest_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        file_url = f"/static/uploads/{safe_filename}"
+        return {"status": "success", "url": file_url}
+    except Exception as e:
+        logger.error(f"Failed to upload attachment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+

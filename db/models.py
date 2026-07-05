@@ -173,3 +173,29 @@ class FacultyChat(Base):
     message = Column(Text, nullable=False)
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
+
+class Announcement(Base):
+    """
+    Faculty announcements broadcast to students and other faculty.
+    """
+    __tablename__ = "announcements"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(300), nullable=False)
+    content = Column(Text, nullable=False)
+    faculty_name = Column(String(200), nullable=False)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+
+    # Expanded fields
+    category = Column(String(100), nullable=True)
+    priority = Column(String(50), default="Low")  # Low, Medium, High, Urgent
+    attachment = Column(String(500), nullable=True)
+    target_audience = Column(String(100), default="All")  # All, Department, Year, Section
+    target_dept = Column(String(100), nullable=True)
+    target_year = Column(String(100), nullable=True)
+    target_sec = Column(String(100), nullable=True)
+    expiry_date = Column(String(100), nullable=True)
+    status = Column(String(50), default="published")  # draft, published
+
+
+

@@ -86,6 +86,22 @@ export function setupAuth(badgeContainerId = 'sidebar-role-badge') {
     injectRoleBadge(badgeContainerId, role);
     
     if (role === 'student') {
+      // Fallback programmatic hide for cached CSS scenarios
+      const hideElements = () => {
+        document.querySelectorAll('a[href*="faculty_chat.html"]').forEach(link => {
+          link.style.setProperty('display', 'none', 'important');
+        });
+        const modalChatBtn = document.getElementById('modal-chat-btn');
+        if (modalChatBtn) {
+          modalChatBtn.style.setProperty('display', 'none', 'important');
+        }
+      };
+      
+      hideElements();
+      document.addEventListener('DOMContentLoaded', hideElements);
+      setTimeout(hideElements, 100);
+      setTimeout(hideElements, 500);
+
       // Guard direct page access for student
       if (window.location.pathname.includes('faculty_chat.html')) {
         window.location.replace('dashboard.html');
