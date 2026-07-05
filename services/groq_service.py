@@ -15,9 +15,11 @@ class GroqService:
     def __init__(self, api_key: str | None = None, model: str | None = None):
         self._api_key = api_key or settings.GROQ_API_KEY
         self._model = model or settings.GROQ_MODEL
-        if not self._api_key:
-            raise ValueError("GROQ_API_KEY is not configured in .env")
-        self._client = Groq(api_key=self._api_key)
+        self._client = None
+        if self._api_key:
+            self._client = Groq(api_key=self._api_key)
+        else:
+            logger.warning("GROQ_API_KEY is not configured in .env. Groq client is inactive.")
 
     def generate(
         self,
@@ -27,6 +29,8 @@ class GroqService:
         max_tokens: int = 1500,
     ) -> str:
         """Generate a response from the LLM."""
+        if not self._client:
+            raise ValueError("GROQ_API_KEY is not configured. Cannot perform generation.")
         logger.debug(f"Groq request: model={self._model}, temp={temperature}")
         try:
             response = self._client.chat.completions.create(
