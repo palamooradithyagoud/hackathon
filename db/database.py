@@ -19,7 +19,10 @@ else:
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create a local-only SQLite engine for caching and metadata to ensure it never touches Supabase
-cache_db_path = os.path.join(settings.PROJECT_ROOT, "local_cache.db")
+if os.getenv("VERCEL"):
+    cache_db_path = "/tmp/local_cache.db"
+else:
+    cache_db_path = os.path.join(settings.PROJECT_ROOT, "local_cache.db")
 cache_engine = create_engine(f"sqlite:///{cache_db_path}", connect_args={"check_same_thread": False})
 CacheSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=cache_engine)
 

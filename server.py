@@ -3,8 +3,17 @@ FastAPI Server.
 Initializes database and coordinates middleware and router configuration.
 """
 
-import uvicorn
+# Workaround for Vercel/AWS Lambda SQLite version compatibility with ChromaDB
 import os
+import sys
+if os.getenv("VERCEL"):
+    try:
+        __import__('pysqlite3')
+        sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    except ImportError:
+        pass
+
+import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

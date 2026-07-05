@@ -21,7 +21,10 @@ class Settings:
         self.CHROMA_TENANT: str = os.getenv("CHROMA_TENANT", "")
         self.CHROMA_DATABASE: str = os.getenv("CHROMA_DATABASE", "")
         self.CHROMA_COLLECTION_NAME: str = os.getenv("CHROMA_COLLECTION_NAME", "pdf_documents")
-        self.CHROMA_PERSIST_DIRECTORY: str = os.getenv("CHROMA_PERSIST_DIRECTORY", "./chromadb_data")
+        persist_dir = os.getenv("CHROMA_PERSIST_DIRECTORY", "./chromadb_data")
+        if os.getenv("VERCEL") and not persist_dir.startswith("/tmp"):
+            persist_dir = "/tmp/chromadb_data"
+        self.CHROMA_PERSIST_DIRECTORY: str = persist_dir
 
         # --- Groq LLM ---
         self.GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
