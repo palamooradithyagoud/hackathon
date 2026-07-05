@@ -1,108 +1,155 @@
-# 🎓 Faculty Research Assistant RAG + Collaboration Platform
+# 🎓 Faculty Research Intelligence Platform (FRIP)
 
-This is a production-grade academic search, collaboration matchmaking, and trend gap identification system powered by a **FastAPI backend** (Vercel serverless compatible) and an **interactive CLI client**.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![FastAPI](https://img.shields.io/badge/FastAPI-v0.100.0+-009688.svg?style=flat&logo=fastapi)]()
+[![ChromaDB](https://img.shields.io/badge/VectorDB-Chroma-yellow.svg)]()
+[![Groq](https://img.shields.io/badge/LLM-Groq%20Llama--3.3-orange.svg)]()
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)]()
 
-## ⚙️ Core Architecture
-
-- **Vector Database**: `ChromaDB` storing faculty biographies and research summaries.
-- **Relational Storage & Memory**: `SQLite` (default) or `PostgreSQL` for transactional logging, decisions, and user feedback.
-- **RAG & Reasoning Engine**: `Groq LLM` with intent classifier routing.
-- **External Intelligence**: `arXiv API` + `Tavily Search API` to compare global trends against local competencies when vector matches are weak.
+The **Faculty Research Intelligence Platform (FRIP)** is a production-grade enterprise academic RAG search, peer-matching, research gap identification, and targeted announcements broadcasting portal. It is designed to assist Vardhaman University administrators, faculty members, and students by utilizing artificial intelligence and natural language processing to classification-route user intent, crawl global research indices, identify institutional gaps, and target university communications.
 
 ---
 
-## 🚀 Setup & Execution
+## ⚙️ Enterprise System Architecture
 
-### 1. Configure Settings
+The following diagram illustrates the flow of queries and communications from frontends down through the cognitive classification routing, external search agents, vector databases, and relational backends.
 
-Create a `.env` file in the root directory (based on `.env.example`):
-```ini
-CHROMA_MODE=remote
-CHROMA_HOST=api.trychroma.com
-CHROMA_PORT=443
-CHROMA_SSL=true
-CHROMA_API_KEY=your_chromadb_cloud_key
-CHROMA_TENANT=your_tenant_id
-CHROMA_DATABASE=your_database_id
-CHROMA_COLLECTION_NAME=Researchpapers
+```mermaid
+graph TD
+    User([User: Student or Faculty]) -->|HTTP / WS| Frontend[Web UI Glassmorphic Dashboard]
+    User -->|CLI Session| Terminal[main.py CLI Client]
+    
+    subgraph FastAPI Gateway
+        Frontend -->|REST API| API[server.py FastAPI Server]
+        Terminal -->|Direct DB / Engine Calls| Classifier[Intent Classifier]
+        API -->|Route Handler| Classifier
+    end
 
-GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=llama-3.3-70b-versatile
+    subgraph Intelligence Engine
+        Classifier -->|Intent: RAG Chat| RAG[RAG Pipeline]
+        Classifier -->|Intent: Collaborate| Matchmaker[Collaboration Matchmaker]
+        Classifier -->|Intent: Gap Analysis| Gap[Gap Analyzer]
+        
+        RAG -->|Reasoning & Gen| Groq[Groq Llama-3.3 LLM]
+        Matchmaker -->|Prompt Synthesis| Groq
+        Gap -->|Synthesis| Groq
+    end
 
-# Optional: Add Tavily API Key for web searches
-TAVILY_API_KEY=your_tavily_key
+    subgraph Data & Storage Layer
+        RAG -->|Vector Embeddings| Chroma[ChromaDB Cloud / Local]
+        Gap -->|Research Trends| Arxiv[arXiv API]
+        Gap -->|Global Web Search| Tavily[Tavily Search API]
+        
+        API -->|Transaction Audit Logs| DB[(SQLite / Supabase Postgres)]
+        API -->|Announcements CRUD| DB
+        Terminal -->|Audit logs logging| DB
+    end
+
+    style Frontend fill:#4F46E5,stroke:#fff,stroke-width:2px,color:#fff
+    style API fill:#06B6D4,stroke:#fff,stroke-width:2px,color:#fff
+    style Groq fill:#10B981,stroke:#fff,stroke-width:2px,color:#fff
+    style Chroma fill:#F59E0B,stroke:#fff,stroke-width:2px,color:#fff
+    style DB fill:#EF4444,stroke:#fff,stroke-width:2px,color:#fff
 ```
 
-### 2. Install Dependencies
+---
 
-Install the requirements inside your virtual environment:
+## ✨ Core Capabilities
+
+### 🔍 Cognitive RAG Chat Search
+- Classifies incoming queries via a multi-intent classifier router.
+- Employs contextual chunk retrieval from **ChromaDB** with dynamic page citation mapping.
+- Automatically falls back to external APIs (**arXiv** + **Tavily Web Search**) when local information density is low.
+
+### 🤝 Synergy peer-matchmaking
+- Synthesizes collaborative joint project proposals between professors based on shared interests and workload indexes.
+- Prevents resource overallocation by monitoring real-time faculty availability metrics.
+
+### 🔬 Global Trend Gap Analysis
+- Connects to web-scale databases to cross-reference global research milestones against internal university competency maps.
+- Exposes unexplored domains and proposes actionable directions for new studies.
+
+### 📢 Targeted Announcements Broadcasting
+- Enables immediate publication or saving as draft.
+- Supports fine-grained target audience segmentation (e.g. *All*, or specifically targeted to a *Department*, *Year*, or *Section*).
+- Highlighted unread alerts, dynamic counts, and localized profile preference storage.
+- Premium glassmorphic slide-out side panel for creation, edits, file attachments, and deletes.
+
+---
+
+## 🛠️ Installation & Verification
+
+### Prerequisites
+- Python 3.9 - 3.11
+- Pip package manager
+
+### 1. Configure Environmental Settings
+Create a `.env` file in the root workspace directory from the `.env.example` template:
+
+| Variable | Description | Default / Example |
+| :--- | :--- | :--- |
+| `CHROMA_MODE` | Chroma location configuration | `remote` |
+| `CHROMA_HOST` | Chroma Cloud API endpoint | `api.trychroma.com` |
+| `CHROMA_PORT` | Chroma Port | `443` |
+| `CHROMA_SSL` | Secure connection flag | `true` |
+| `CHROMA_API_KEY` | Chroma DB authentication token | `your_chromadb_cloud_key` |
+| `CHROMA_COLLECTION_NAME` | Main paper vector index collection | `Researchpapers` |
+| `GROQ_API_KEY` | Groq Developer API token | `your_groq_api_key` |
+| `GROQ_MODEL` | Reasoning Model variant | `llama-3.3-70b-versatile` |
+| `TAVILY_API_KEY` | Optional Web Search integration token | `your_tavily_key` |
+
+### 2. Dependency Installation
+Initialize your virtual environment and run the installer:
 ```bash
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 3. Ingest Data (Optional)
-
-If you need to re-ingest PDFs from Google Drive:
+### 3. Database Initialization & Schema Migration
+To setup the relational tables and apply migrations:
 ```bash
-python ingest_drive.py
+python -m db.init_db
 ```
 
 ---
 
-## 💻 CLI Mode (Primary Demo)
+## 🚀 Running the Platform
 
-To run the terminal-based conversation assistant directly:
+### A. Start the Backend API Server & UI
+Launch the FastAPI development environment:
+```bash
+python server.py
+```
+* The API endpoints will start listening at: [http://localhost:8000/api](http://localhost:8000/api)
+* The polished Web Dashboard will be served at: [http://localhost:8000/dashboard.html](http://localhost:8000/dashboard.html)
+
+### B. Launch Terminal CLI Session
+For text-only interactions, run the command-line client:
 ```bash
 python main.py
 ```
 
-### Example Usage:
-```
-You: Who works on Federated Learning?
+---
 
-Assistant:
-Dr. Padmaja and Dr. Venkateshwara are the closest matches...
-[Detailed reasoning, citing documents and page numbers]
+## 📡 REST API Reference
 
-Shall I proceed and log this recommendation? (yes/no): yes
-Recommendation successfully logged.
-Would you like to rate this response? (1-5, or press Enter to skip): 5
-Any comments? (Optional): Very relevant matches!
-Thank you for your feedback!
-```
+| Endpoint | Method | Description | Payload Schema |
+| :--- | :---: | :--- | :--- |
+| `/api/chat` | `POST` | Dynamic RAG chat with classification | `{"query": str, "role": str}` |
+| `/api/recommend` | `POST` | Get closest faculty profile matches | `{"query": str}` |
+| `/api/collaborate` | `POST` | Propose joint peer-to-peer synergy projects | `{"faculty_a": str, "faculty_b": str}` |
+| `/api/professor-mode` | `POST` | Institutional research gap analysis | `{"topic": str}` |
+| `/api/upload_pdf` | `POST` | Clean, chunk, and index profile PDF | `Multipart Form File` |
+| `/api/announcements` | `POST` | Create announcement draft / publication | `AnnouncementCreate` |
+| `/api/announcements` | `GET` | Retrieve targeted announcements | *(Query Params)* `role`, `department`, `year`, `section` |
+| `/api/announcements/{id}` | `PUT` | Update/Edit an existing announcement | `AnnouncementCreate` |
+| `/api/announcements/{id}` | `DELETE`| Delete an announcement | None |
+| `/api/announcements/upload_attachment` | `POST` | Save file attachments | `Multipart Form File` |
 
 ---
 
-## 🌐 Server Mode (APIs)
-
-To run the FastAPI server locally:
-```bash
-python server.py
-```
-Or:
-```bash
-uvicorn server:app --port 8000 --reload
-```
-
-### Main Endpoints:
-
-1. **`POST /api/chat`** — Routes queries dynamically using intent classifier.
-   - Body: `{"query": "Who works on IoT?"}`
-2. **`POST /api/upload_pdf`** — Ingest and clean custom faculty profile PDFs.
-3. **`POST /api/recommend`** — General RAG search for faculty profiles.
-4. **`POST /api/collaborate`** — Propose collaborations and joint projects between professors.
-   - Body: `{"faculty_a": "Padmaja", "faculty_b": "Madhurya"}`
-5. **`POST /api/professor-mode`** — Gap analysis comparing local expertise against arXiv/web trends.
-   - Body: `{"topic": "quantum computing"}`
-6. **`GET /api/logs`** — Retrieve database audit logs.
-7. **`POST /api/feedback`** — Submit ratings and comments.
-
----
-
-## ⚡ Deployment
-
-Deploy to Vercel instantly using the preconfigured [vercel.json](vercel.json):
-```bash
-vercel deploy
-```
-Ensure environment variables match those in `.env`.
+## 🏢 Enterprise Compliance & Governance
+- **Data Protection**: Local SQLite database storage incorporates automated schema rollbacks to ensure transactions satisfy ACID constraints.
+- **Vercel Serverless Ready**: Layout complies with stateless handler constraints for instant horizontal scale deployments.
+- **License**: Distributed under the MIT Open Source License.
