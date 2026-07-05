@@ -21,6 +21,7 @@ class Settings:
         self.CHROMA_TENANT: str = os.getenv("CHROMA_TENANT", "")
         self.CHROMA_DATABASE: str = os.getenv("CHROMA_DATABASE", "")
         self.CHROMA_COLLECTION_NAME: str = os.getenv("CHROMA_COLLECTION_NAME", "pdf_documents")
+        self.CHROMA_PERSIST_DIRECTORY: str = os.getenv("CHROMA_PERSIST_DIRECTORY", "./chromadb_data")
 
         # --- Groq LLM ---
         self.GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")

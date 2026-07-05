@@ -11,22 +11,28 @@ load_dotenv()
 
 def get_chroma_client():
     """
-    Initializes and returns a Chroma Cloud client using credentials from .env.
+    Initializes and returns a Chroma client using credentials from .env.
     """
-    api_key = os.getenv("CHROMA_API_KEY", "").strip()
-    tenant = os.getenv("CHROMA_TENANT", "").strip()
-    database = os.getenv("CHROMA_DATABASE", "").strip()
+    mode = os.getenv("CHROMA_MODE", "remote").strip().lower()
+    if mode == "remote":
+        api_key = os.getenv("CHROMA_API_KEY", "").strip()
+        tenant = os.getenv("CHROMA_TENANT", "").strip()
+        database = os.getenv("CHROMA_DATABASE", "").strip()
 
-    if not api_key or not tenant or not database:
-        print("ERROR: Missing CHROMA_API_KEY, CHROMA_TENANT, or CHROMA_DATABASE in .env")
-        sys.exit(1)
+        if not api_key or not tenant or not database:
+            print("ERROR: Missing CHROMA_API_KEY, CHROMA_TENANT, or CHROMA_DATABASE in .env")
+            sys.exit(1)
 
-    print(f"Connecting to Chroma Cloud (tenant: {tenant}, database: {database})...")
-    client = chromadb.CloudClient(
-        api_key=api_key,
-        tenant=tenant,
-        database=database,
-    )
+        print(f"Connecting to Chroma Cloud (tenant: {tenant}, database: {database})...")
+        client = chromadb.CloudClient(
+            api_key=api_key,
+            tenant=tenant,
+            database=database,
+        )
+    else:
+        persist_dir = os.getenv("CHROMA_PERSIST_DIRECTORY", "./chromadb_data").strip()
+        print(f"Connecting to local Chroma DB (persist: {persist_dir})...")
+        client = chromadb.PersistentClient(path=persist_dir)
 
     # Verify connection
     try:

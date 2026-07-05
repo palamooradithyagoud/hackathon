@@ -12,11 +12,15 @@ print(f'[1] Config       : OK  (model={model_short})')
 # 2. ChromaDB
 try:
     import chromadb
-    client = chromadb.CloudClient(
-        api_key=settings.CHROMA_API_KEY,
-        tenant=settings.CHROMA_TENANT,
-        database=settings.CHROMA_DATABASE
-    )
+    mode = os.getenv("CHROMA_MODE", "remote").strip().lower()
+    if mode == "remote":
+        client = chromadb.CloudClient(
+            api_key=settings.CHROMA_API_KEY,
+            tenant=settings.CHROMA_TENANT,
+            database=settings.CHROMA_DATABASE
+        )
+    else:
+        client = chromadb.PersistentClient(path=settings.CHROMA_PERSIST_DIRECTORY)
     col = client.get_or_create_collection(settings.CHROMA_COLLECTION_NAME)
     count = col.count()
     print(f'[2] ChromaDB     : OK  ({count} chunks in collection)')
